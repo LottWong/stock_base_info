@@ -52,6 +52,9 @@ def get_xueqiu_stock_info(stock_code="600030"):
         elif stock_code.startswith(('0', '2', '3')):
             # 深圳证券交易所
             symbol = f"SZ{stock_code}"
+        elif stock_code.startswith(('8', '4', '9')):
+            # 北京证券交易所
+            symbol = f"BJ{stock_code}"
         else:
             # 默认使用SH前缀
             symbol = f"SH{stock_code}"
