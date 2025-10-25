@@ -10,20 +10,13 @@ import pandas as pd
 from datetime import datetime
 import os
 
-def get_xueqiu_stock_info(stock_code="600030", output_file=None):
+def get_xueqiu_stock_info(stock_code="600030"):
     """
-    获取雪球股票基础信息并保存到文件
+    获取雪球股票基础信息
 
     :param stock_code: 股票代码，默认为600030(中信证券)
-    :param output_file: 输出文件路径，如果为None则使用默认路径
     :return: 包含股票信息的字典
     """
-
-    # 设置默认输出文件路径
-    if output_file is None:
-        output_dir = os.path.join(os.path.dirname(__file__), 'output')
-        os.makedirs(output_dir, exist_ok=True)
-        output_file = os.path.join(output_dir, 'stock_base_xqinfo_output.txt')
 
     # 需要提取的字段列表
     required_fields = [
@@ -52,8 +45,17 @@ def get_xueqiu_stock_info(stock_code="600030", output_file=None):
     ]
 
     try:
-        # 雪球API需要带交易所前缀的股票代码
-        symbol = f"SH{stock_code}"
+        # 根据股票代码判断交易所前缀
+        if stock_code.startswith('6'):
+            # 上海证券交易所
+            symbol = f"SH{stock_code}"
+        elif stock_code.startswith(('0', '2', '3')):
+            # 深圳证券交易所
+            symbol = f"SZ{stock_code}"
+        else:
+            # 默认使用SH前缀
+            symbol = f"SH{stock_code}"
+            print(f"警告: 无法识别股票代码 {stock_code} 的交易所，默认使用SH前缀")
 
         print(f"正在获取雪球股票基础信息...")
         print(f"股票代码: {stock_code} ({symbol})")
@@ -75,16 +77,6 @@ def get_xueqiu_stock_info(stock_code="600030", output_file=None):
             # 添加xqinfo_前缀
             result[f'xqinfo_{field}'] = value
 
-        # 保存到文件
-        save_to_file(result, stock_code, output_file)
-
-        # 打印结果
-        print(f"\n成功获取雪球股票基础信息:")
-        print("=" * 50)
-        for key, value in result.items():
-            print(f"{key}: {value}")
-
-        print(f"\n结果已保存到: {output_file}")
         return result
 
     except KeyError as e:
@@ -132,10 +124,18 @@ def main():
     # 可以修改这里的股票代码来获取不同股票的信息
     stock_code = "600030"  # 中信证券
 
+    # 设置输出文件路径
+    output_dir = os.path.join(os.path.dirname(__file__), 'output')
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, 'stock_base_xqinfo_output.txt')
+
     # 获取股票信息
     result = get_xueqiu_stock_info(stock_code)
 
     if result:
+        # 保存到文件
+        save_to_file(result, stock_code, output_file)
+        print(f"\n结果已保存到: {output_file}")
         print("\n数据获取完成!")
     else:
         print("\n数据获取失败!")
