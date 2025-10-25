@@ -14,7 +14,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
 from stock_base_cninfo import get_stock_basic_info as get_cninfo_info
-from stock_base_xqinfo import get_xueqiu_stock_info as get_xqinfo_info
+# 导入xqinfo模块
+from stock_base_xqinfo import get_xueqiu_stock_info
 
 def get_stock_info(stock_code):
     """
@@ -67,8 +68,6 @@ def get_xqinfo_stock_info(stock_code):
     获取雪球股票信息的包装函数
     """
     try:
-        # 导入xqinfo模块
-        from stock_base_xqinfo import get_xueqiu_stock_info
         return get_xueqiu_stock_info(stock_code)
     except ImportError as e:
         print(f"导入stock_base_xqinfo模块失败: {e}")
@@ -116,7 +115,7 @@ def main():
     print("=" * 60)
 
     # 测试股票代码
-    stock_code = "600030"  # 中信证券
+    stock_code = "002709"  # 中信证券
 
     # 使用统一接口获取股票信息
     print(f"\n获取股票 {stock_code} 的基础信息:")
