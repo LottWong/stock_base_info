@@ -83,7 +83,7 @@ def get_stock_basic_info(symbol):
             en_stock_info['cninfo_scope'] = row.get('经营范围', '')
             en_stock_info['cninfo_profile'] = row.get('机构简介', '')
 
-        return cn_stock_info, en_stock_info
+        return en_stock_info, cn_stock_info
 
     except Exception as e:
         print(f"获取股票 {symbol} 信息时出错: {e}")
